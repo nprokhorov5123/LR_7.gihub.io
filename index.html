@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота №7 — jQuery та плагіни</title>
+    
+    <!-- Фавіконка -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    
+    <!-- Owl Carousel CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    
+    <!-- Magnific Popup CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">
+    
+    <style>
+        /* ═══════════════════════════════════════════
+           ЗМІННІ
+        ═══════════════════════════════════════════ */
+        :root {
+            --blue-deep:  #003366;
+            --blue-mid:   #0056b3;
+            --blue-soft:  #4a9fe8;
+            --blue-light: #d8f0ff;
+            --blue-pale:  #eaf5ff;
+            --white:      #ffffff;
+            --gray:       #5a6a7a;
+            --border:     #c2daf5;
+            
+            --font-body:    'DM Sans', system-ui, sans-serif;
+            --font-heading: 'Playfair Display', Georgia, serif;
+            --font-ui:      'Montserrat', 'Segoe UI', sans-serif;
+            
+            --shadow: 0 8px 32px rgba(0, 86, 179, 0.10);
+            --radius: 16px;
+        }
+        
+        /* ═══════════════════════════════════════════
+           БАЗОВІ СТИЛІ
+        ═══════════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: var(--blue-light);
+            background-image:
+                radial-gradient(ellipse at 10% 20%, rgba(0,86,179,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 90% 80%, rgba(0,51,102,0.06) 0%, transparent 55%);
+            color: #1e2a38;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* ═══════════════════════════════════════════
+           НАВІГАЦІЯ
+        ═══════════════════════════════════════════ */
+        .site-header {
+            background: var(--white);
+            border-bottom: 1.5px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0,86,179,0.07);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-logo {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            color: var(--blue-deep);
+            text-decoration: none;
+        }
+        
+        .nav-links { display: flex; gap: 2rem; }
+        
+        .nav-link {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 0.82rem;
+            text-decoration: none;
+            color: var(--gray);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            transition: color 0.25s;
+        }
+        
+        .nav-link:hover { color: var(--blue-mid); }
+        
+        /* ═══════════════════════════════════════════
+           HERO
+        ═══════════════════════════════════════════ */
+        .hero {
+            text-align: center;
+            padding: 5rem 1.5rem 4rem;
+            background: linear-gradient(160deg, var(--white) 0%, var(--blue-pale) 60%, var(--blue-light) 100%);
+            border-bottom: 1.5px solid var(--border);
+            animation: fadeUp 0.8s ease both;
+        }
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero-label {
+            font-family: var(--font-ui);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--blue-mid);
+            margin-bottom: 1rem;
+        }
+        
+        .hero-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            color: var(--blue-deep);
+            line-height: 1.15;
+            margin-bottom: 1.2rem;
+        }
+        
+        .hero-text {
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        
+        /* ═══════════════════════════════════════════
+           СЕКЦІЇ
+        ═══════════════════════════════════════════ */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .section-label {
+            font-family: var(--font-ui);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--blue-mid);
+            margin-bottom: 0.6rem;
+        }
+        
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            color: var(--blue-deep);
+            margin-bottom: 2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1.5px solid var(--border);
+        }
+        
+        .section-alt {
+            background: var(--white);
+            border-top: 1.5px solid var(--border);
+            border-bottom: 1.5px solid var(--border);
+        }
+        
+        /* ═══════════════════════════════════════════
+           OWL CAROUSEL — Слайдер
+        ═══════════════════════════════════════════ */
+        .owl-carousel .item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.12);
+            transition: transform 0.3s;
+        }
+        
+        .owl-carousel .item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,86,179,0.18);
+        }
+        
+        .owl-carousel .item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .owl-carousel .owl-nav button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--white) !important;
+            color: var(--blue-mid) !important;
+            border: 1.5px solid var(--border) !important;
+            border-radius: 50% !important;
+            width: 42px !important;
+            height: 42px !important;
+            font-size: 1.4rem !important;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.1);
+            transition: all 0.25s;
+        }
+        
+        .owl-carousel .owl-nav button:hover {
+            background: var(--blue-mid) !important;
+            color: var(--white) !important;
+            box-shadow: 0 6px 16px rgba(0,86,179,0.2);
+        }
+        
+        .owl-carousel .owl-nav .owl-prev { left: -20px; }
+        .owl-carousel .owl-nav .owl-next { right: -20px; }
+        
+        .owl-carousel .owl-dots {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .owl-carousel .owl-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin: 0 5px;
+            background: var(--border) !important;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .owl-carousel .owl-dot.active {
+            background: var(--blue-mid) !important;
+            width: 28px;
+            border-radius: 6px;
+        }
+        
+        /* ═══════════════════════════════════════════
+           MAGNIFIC POPUP — Галерея
+        ═══════════════════════════════════════════ */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,86,179,0.10);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,86,179,0.18);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.08);
+        }
+        
+        .gallery-item::after {
+            content: '🔍';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 2rem;
+            background: rgba(255,255,255,0.95);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+            pointer-events: none;
+        }
+        
+        .gallery-item:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        /* ═══════════════════════════════════════════
+           JQUERY UI — Accordion
+        ═══════════════════════════════════════════ */
+        .ui-accordion .ui-accordion-header {
+            font-family: var(--font-ui) !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+            background: var(--blue-pale) !important;
+            border: 1.5px solid var(--border) !important;
+            color: var(--blue-deep) !important;
+            border-radius: 8px !important;
+            margin-bottom: 8px !important;
+            padding: 12px 16px !important;
+            transition: all 0.25s !important;
+        }
+        
+        .ui-accordion .ui-accordion-header:hover {
+            background: var(--blue-light) !important;
+            border-color: var(--blue-mid) !important;
+        }
+        
+        .ui-accordion .ui-accordion-header.ui-state-active {
+            background: var(--blue-mid) !important;
+            color: var(--white) !important;
+            border-color: var(--blue-mid) !important;
+        }
+        
+        .ui-accordion .ui-accordion-content {
+            font-family: var(--font-body) !important;
+            font-size: 0.92rem !important;
+            color: var(--gray) !important;
+            background: var(--white) !important;
+            border: 1.5px solid var(--border) !important;
+            border-radius: 8px !important;
+            margin-bottom: 8px !important;
+            padding: 16px !important;
+            line-height: 1.7 !important;
+        }
+        
+        .ui-accordion .ui-icon {
+            background-image: none !important;
+        }
+        
+        .ui-accordion .ui-icon::before {
+            content: '▼';
+            color: var(--blue-mid);
+            font-size: 0.7rem;
+        }
+        
+        .ui-accordion .ui-state-active .ui-icon::before {
+            content: '▲';
+            color: var(--white);
+        }
+        
+        /* ═══════════════════════════════════════════
+           JQUERY UI — Tabs
+        ═══════════════════════════════════════════ */
+        .ui-tabs {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+        
+        .ui-tabs .ui-tabs-nav {
+            background: transparent !important;
+            border: none !important;
+            border-bottom: 2px solid var(--border) !important;
+            padding: 0 !important;
+            margin-bottom: 1.5rem !important;
+        }
+        
+        .ui-tabs .ui-tabs-nav li {
+            border: none !important;
+            background: transparent !important;
+            margin: 0 8px 0 0 !important;
+        }
+        
+        .ui-tabs .ui-tabs-nav li a {
+            font-family: var(--font-ui) !important;
+            font-weight: 600 !important;
+            font-size: 0.88rem !important;
+            letter-spacing: 0.5px !important;
+            text-transform: uppercase !important;
+            color: var(--gray) !important;
+            padding: 10px 20px !important;
+            border-radius: 8px 8px 0 0 !important;
+            transition: all 0.25s !important;
+        }
+        
+        .ui-tabs .ui-tabs-nav li a:hover {
+            background: var(--blue-pale) !important;
+            color: var(--blue-mid) !important;
+        }
+        
+        .ui-tabs .ui-tabs-nav li.ui-state-active a {
+            background: var(--blue-mid) !important;
+            color: var(--white) !important;
+            border: none !important;
+        }
+        
+        .ui-tabs .ui-tabs-panel {
+            font-family: var(--font-body) !important;
+            font-size: 0.92rem !important;
+            color: var(--gray) !important;
+            padding: 1.5rem !important;
+            background: var(--white) !important;
+            border: 1.5px solid var(--border) !important;
+            border-radius: 12px !important;
+            line-height: 1.7 !important;
+        }
+        
+        /* ═══════════════════════════════════════════
+           JQUERY UI — Datepicker
+        ═══════════════════════════════════════════ */
+        .datepicker-wrapper {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .datepicker-wrapper label {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--blue-deep);
+            display: block;
+            margin-bottom: 0.6rem;
+        }
+        
+        #datepicker {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: var(--blue-pale);
+            color: var(--blue-deep);
+            transition: border-color 0.25s;
+        }
+        
+        #datepicker:focus {
+            outline: none;
+            border-color: var(--blue-mid);
+        }
+        
+        .ui-datepicker {
+            font-family: var(--font-body) !important;
+            background: var(--white) !important;
+            border: 1.5px solid var(--border) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 8px 24px rgba(0,86,179,0.15) !important;
+            padding: 12px !important;
+        }
+        
+        .ui-datepicker-header {
+            background: var(--blue-mid) !important;
+            color: var(--white) !important;
+            border: none !important;
+            border-radius: 8px !important;
+            padding: 8px !important;
+        }
+        
+        .ui-datepicker-title {
+            font-family: var(--font-ui) !important;
+            font-weight: 600 !important;
+            color: var(--white) !important;
+        }
+        
+        .ui-datepicker td span,
+        .ui-datepicker td a {
+            text-align: center !important;
+            padding: 6px !important;
+            border-radius: 6px !important;
+            transition: all 0.2s !important;
+        }
+        
+        .ui-datepicker td a:hover {
+            background: var(--blue-pale) !important;
+            border-color: var(--blue-mid) !important;
+            color: var(--blue-deep) !important;
+        }
+        
+        .ui-datepicker td .ui-state-active {
+            background: var(--blue-mid) !important;
+            color: var(--white) !important;
+        }
+        
+        /* ═══════════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════════ */
+        footer {
+            background: var(--white);
+            border-top: 1.5px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        footer p {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        footer strong {
+            font-family: var(--font-heading);
+            color: var(--blue-deep);
+        }
+        
+        /* ═══════════════════════════════════════════
+           АДАПТИВНІСТЬ
+        ═══════════════════════════════════════════ */
+        @media (max-width: 700px) {
+            .nav-links { display: none; }
+            .hero { padding: 3.5rem 1rem 3rem; }
+            .section { padding: 3rem 1rem; }
+            .owl-carousel .owl-nav button { display: none !important; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- НАВІГАЦІЯ -->
+<header class="site-header">
+    <nav>
+        <a href="#" class="nav-logo">jQuery Lab</a>
+        <div class="nav-links">
+            <a href="#carousel" class="nav-link">Слайдер</a>
+            <a href="#gallery" class="nav-link">Галерея</a>
+            <a href="#ui" class="nav-link">jQuery UI</a>
+        </div>
+    </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <p class="hero-label">Лабораторна робота №7</p>
+    <h1 class="hero-title">JavaScript, jQuery та плагіни</h1>
+    <p class="hero-text">
+        Демонстрація роботи з бібліотекою jQuery, плагінами Owl Carousel і Magnific Popup, та елементами jQuery UI
+    </p>
+</section>
+
+<!-- ① OWL CAROUSEL — Слайдер -->
+<section class="section" id="carousel">
+    <p class="section-label">Плагін 1</p>
+    <h2 class="section-title">Owl Carousel — Адаптивний слайдер</h2>
+    
+    <div class="owl-carousel owl-theme">
+        <div class="item"><img src="https://picsum.photos/seed/lab7-1/600/280" alt="Slide 1"></div>
+        <div class="item"><img src="https://picsum.photos/seed/lab7-2/600/280" alt="Slide 2"></div>
+        <div class="item"><img src="https://picsum.photos/seed/lab7-3/600/280" alt="Slide 3"></div>
+        <div class="item"><img src="https://picsum.photos/seed/lab7-4/600/280" alt="Slide 4"></div>
+        <div class="item"><img src="https://picsum.photos/seed/lab7-5/600/280" alt="Slide 5"></div>
+        <div class="item"><img src="https://picsum.photos/seed/lab7-6/600/280" alt="Slide 6"></div>
+    </div>
+    
+    <p style="margin-top:1.5rem; font-size:0.9rem; color:var(--gray); text-align:center;">
+        Опції: <code>loop</code>, <code>autoplay</code>, <code>nav</code>, <code>dots</code>, <code>responsive</code> — кількість слайдів залежить від ширини екрана
+    </p>
+</section>
+
+<!-- ② MAGNIFIC POPUP — Галерея -->
+<section class="section section-alt" id="gallery">
+    <div class="section">
+        <p class="section-label">Плагін 2</p>
+        <h2 class="section-title">Magnific Popup — Модальна галерея</h2>
+        
+        <div class="gallery-grid popup-gallery">
+            <a class="gallery-item" href="https://picsum.photos/seed/gal1/800/600">
+                <img src="https://picsum.photos/seed/gal1/300/180" alt="Фото 1">
+            </a>
+            <a class="gallery-item" href="https://picsum.photos/seed/gal2/800/600">
+                <img src="https://picsum.photos/seed/gal2/300/180" alt="Фото 2">
+            </a>
+            <a class="gallery-item" href="https://picsum.photos/seed/gal3/800/600">
+                <img src="https://picsum.photos/seed/gal3/300/180" alt="Фото 3">
+            </a>
+            <a class="gallery-item" href="https://picsum.photos/seed/gal4/800/600">
+                <img src="https://picsum.photos/seed/gal4/300/180" alt="Фото 4">
+            </a>
+            <a class="gallery-item" href="https://picsum.photos/seed/gal5/800/600">
+                <img src="https://picsum.photos/seed/gal5/300/180" alt="Фото 5">
+            </a>
+            <a class="gallery-item" href="https://picsum.photos/seed/gal6/800/600">
+                <img src="https://picsum.photos/seed/gal6/300/180" alt="Фото 6">
+            </a>
+        </div>
+        
+        <p style="margin-top:1.5rem; font-size:0.9rem; color:var(--gray); text-align:center;">
+            Клікніть на зображення для перегляду у повному розмірі. Навігація стрілками або свайпом на мобільних.
+        </p>
+    </div>
+</section>
+
+<!-- ③ JQUERY UI — Accordion, Tabs, Datepicker -->
+<section class="section" id="ui">
+    <p class="section-label">Бібліотека jQuery UI</p>
+    <h2 class="section-title">Інтерактивні елементи</h2>
+    
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:2rem; margin-bottom:3rem;">
+        
+        <!-- Accordion -->
+        <div>
+            <h3 style="font-family:var(--font-ui); font-size:1.1rem; color:var(--blue-deep); margin-bottom:1rem;">① Accordion</h3>
+            <div id="accordion">
+                <h3>Що таке jQuery?</h3>
+                <div>
+                    <p>jQuery — це швидка, невелика та багатофункціональна JavaScript-бібліотека. Вона спрощує роботу з HTML-документами, обробку подій, анімацію та AJAX.</p>
+                </div>
+                <h3>Навіщо потрібні плагіни?</h3>
+                <div>
+                    <p>Плагіни дозволяють розширити функціональність jQuery без написання складного коду з нуля. Існують тисячі готових рішень для слайдерів, модальних вікон, форм тощо.</p>
+                </div>
+                <h3>Переваги jQuery UI</h3>
+                <div>
+                    <p>jQuery UI надає набір готових віджетів (Accordion, Tabs, Datepicker, Dialog) з можливістю кастомізації через теми та опції.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div>
+            <h3 style="font-family:var(--font-ui); font-size:1.1rem; color:var(--blue-deep); margin-bottom:1rem;">② Tabs</h3>
+            <div id="tabs">
+                <ul>
+                    <li><a href="#tabs-1">HTML</a></li>
+                    <li><a href="#tabs-2">CSS</a></li>
+                    <li><a href="#tabs-3">JavaScript</a></li>
+                </ul>
+                <div id="tabs-1">
+                    <p><strong>HTML</strong> (HyperText Markup Language) — мова розмітки для створення структури веб-сторінок. Визначає заголовки, параграфи, зображення, посилання тощо.</p>
+                </div>
+                <div id="tabs-2">
+                    <p><strong>CSS</strong> (Cascading Style Sheets) — мова стилів для оформлення HTML-елементів. Керує кольорами, шрифтами, відступами, анімаціями.</p>
+                </div>
+                <div id="tabs-3">
+                    <p><strong>JavaScript</strong> — мова програмування для додавання інтерактивності веб-сторінкам: обробка подій, валідація форм, динамічна зміна контенту.</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Datepicker -->
+    <div style="max-width:400px;">
+        <h3 style="font-family:var(--font-ui); font-size:1.1rem; color:var(--blue-deep); margin-bottom:1rem;">③ Datepicker</h3>
+        <div class="datepicker-wrapper">
+            <label for="datepicker">Оберіть дату:</label>
+            <input type="text" id="datepicker" placeholder="Клікніть для вибору">
+        </div>
+    </div>
+    
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 — <strong>Лабораторна робота №7</strong> · JavaScript · jQuery · Owl Carousel · Magnific Popup · jQuery UI</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     СКРИПТИ
+═══════════════════════════════════════════ -->
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- jQuery UI -->
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+<!-- Owl Carousel JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<!-- Magnific Popup JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    
+    // ① Owl Carousel — ініціалізація
+    $('.owl-carousel').owlCarousel({
+        loop: true,
+        autoplay: true,
+        autoplayTimeout: 3000,
+        autoplayHoverPause: true,
+        margin: 16,
+        nav: true,
+        navText: ['‹', '›'],
+        dots: true,
+        responsive: {
+            0: {
+                items: 1
+            },
+            600: {
+                items: 2
+            },
+            900: {
+                items: 3
+            }
+        }
+    });
+    
+    // ② Magnific Popup — галерея
+    $('.popup-gallery').magnificPopup({
+        delegate: 'a',
+        type: 'image',
+        gallery: {
+            enabled: true,
+            navigateByImgClick: true,
+            preload: [0, 1]
+        },
+        image: {
+            titleSrc: 'title'
+        },
+        mainClass: 'mfp-fade',
+        removalDelay: 300
+    });
+    
+    // ③ jQuery UI — Accordion
+    $('#accordion').accordion({
+        collapsible: true,
+        heightStyle: 'content',
+        animate: 300
+    });
+    
+    // ④ jQuery UI — Tabs
+    $('#tabs').tabs({
+        show: { effect: 'fadeIn', duration: 250 },
+        hide: { effect: 'fadeOut', duration: 200 }
+    });
+    
+    // ⑤ jQuery UI — Datepicker
+    $('#datepicker').datepicker({
+        dateFormat: 'dd.mm.yy',
+        changeMonth: true,
+        changeYear: true,
+        yearRange: '1990:2030',
+        showAnim: 'fadeIn'
+    });
+    
+});
+</script>
+
+</body>
+</html>
